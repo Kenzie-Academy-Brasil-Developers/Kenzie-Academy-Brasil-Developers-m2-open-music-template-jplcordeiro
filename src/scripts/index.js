@@ -1,11 +1,11 @@
-/* Desenvolva sua lógica aqui ... */
+import {themeAnalisys, handleThemeChange} from './theme.js';
+import{albumList, genresList} from './productsData.js'
+import {handleCustomInputRange} from './input.js'
 
-function renderGenreItems(genres) {
+const renderGenreItems = (genres) => {
   const ulGenreList = document.querySelector(".genres__list");
 
-  for (let i = 0; i < genres.length; i++) {
-    const currentGenre = genres[i];
-
+  genres.forEach((currentGenre) => {
     const liGenre = document.createElement("li");
     liGenre.innerText = currentGenre;
     liGenre.classList.add("genre__item", "text3");
@@ -13,10 +13,11 @@ function renderGenreItems(genres) {
       liGenre.classList.add("active");
     }
     ulGenreList.appendChild(liGenre);
-  }
+  });
 }
 
-function createAlbumCard(albumData) {
+
+const createAlbumCard = (albumData) => {
   // CRIANDO OS ELEMENTOS
   const card = document.createElement("li");
 
@@ -32,7 +33,7 @@ function createAlbumCard(albumData) {
   const albumBuyButton = document.createElement("button");
 
   // CARD
-  card.classList.add("album__item");
+  card.classList.add("album__item", "slide");
 
   // COVER IMG
   albumCoverContainer.classList.add("album__cover-container");
@@ -75,41 +76,33 @@ function createAlbumCard(albumData) {
   return card;
 }
 
-function renderAlbumCards(albums) {
+const renderAlbumCards = (albums) => {
   const ulAlbumList = document.querySelector(".albums__list");
   ulAlbumList.innerHTML = "";
 
-  for (let i = 0; i < albums.length; i++) {
-    const currentAlbum = albums[i];
+  albums.forEach((currentAlbum) => {
     const albumCard = createAlbumCard(currentAlbum);
     ulAlbumList.appendChild(albumCard);
-  }
+  });
 }
 
-function handleFilter(albums, genreFilter = "Todos", priceFilter) {
-  const filteredAlbums = [];
 
-  for (let i = 0; i < albums.length; i++) {
-    const currentAlbum = albums[i];
-    if (
+const handleFilter = (albums, genreFilter = "Todos", priceFilter) => {
+  return albums.filter((currentAlbum) => {
+    return (
       (currentAlbum.genre === genreFilter || genreFilter === "Todos") &&
       currentAlbum.price <= priceFilter
-    ) {
-      filteredAlbums.push(currentAlbum);
-    }
-  }
-
-  return filteredAlbums;
+    );
+  });
 }
 
-function removeActiveClass(genres) {
-  for (let i = 0; i < genres.length; i++) {
-    const genre = genres[i];
+const removeActiveClass = (genres) => {
+  genres.forEach((genre) => {
     genre.classList.remove("active");
-  }
+  });
 }
 
-function handleFilterEvents(albums) {
+const handleFilterEvents = (albums) => {
   const genres = document.querySelectorAll(".genre__item");
   const inputPriceRange = document.querySelector(".price__input-range");
   const spanPriceValue = document.querySelector(".price-range__value--dynamic");
@@ -117,9 +110,8 @@ function handleFilterEvents(albums) {
   let genreCategory = "Todos";
   let priceValue = inputPriceRange.valueAsNumber;
 
-  for (let i = 0; i < genres.length; i++) {
-    const currentGenre = genres[i];
-    currentGenre.addEventListener("click", function (event) {
+  genres.forEach((currentGenre) => {
+    currentGenre.addEventListener("click", (event) => {
       removeActiveClass(genres);
       currentGenre.classList.add("active");
       genreCategory = event.target.innerText;
@@ -127,9 +119,9 @@ function handleFilterEvents(albums) {
       const albumsToRender = handleFilter(albums, genreCategory, priceValue);
       renderAlbumCards(albumsToRender);
     });
-  }
+  });
 
-  inputPriceRange.addEventListener("input", function (event) {
+  inputPriceRange.addEventListener("input", (event) => {
     priceValue = event.target.value;
     spanPriceValue.innerText = "R$ " + priceValue;
     const albumsToRender = handleFilter(albums, genreCategory, priceValue);
@@ -138,6 +130,10 @@ function handleFilterEvents(albums) {
   });
 }
 
+handleCustomInputRange();
+handleThemeChange();
+themeAnalisys();
 renderGenreItems(genresList);
 handleFilterEvents(albumList);
 renderAlbumCards(albumList);
+
